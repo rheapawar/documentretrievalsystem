@@ -2,7 +2,7 @@ from collections import defaultdict
 
 class InvertedIndex:
     def __init__(self):
-        self.listings : defaultdict[str, defaultdict[str, int]] = defaultdict(int)
+        self.listings : defaultdict[str, dict[str, int]] = defaultdict(dict)
         self.doc_lengths : dict[str, int] = {}
 
     @property
@@ -36,5 +36,4 @@ class InvertedIndex:
         return self.listings.get(token, {}).get(doc_id, 0)
 
     def documents_containing(self, token: str) -> list[str]:
-        return list(self.postings.get(token, {}).keys())
-
+        return list(self.listings.get(token, {}).keys())

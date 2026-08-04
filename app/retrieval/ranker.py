@@ -8,7 +8,7 @@ Scorer = Callable[[InvertedIndex, str, str], float]
 
 def tfidf_score(index: InvertedIndex, token: str, doc_id: str) -> float:
     tf = index.term_frequency(token, doc_id)
-    idf = log((index.doc_count + 1) / (index.document_frequency(token) + 1)) + 1
+    idf = math.log((index.doc_count + 1) / (index.document_frequency(token) + 1)) + 1
     return tf * idf
     
 
@@ -21,8 +21,8 @@ def bm25_score(index: InvertedIndex,
 ) -> float:
     df = index.document_frequency(token)
     tf = index.term_frequency(token, doc_id)
-    idf = log((index.doc_count - df + 0.5) / df + 0.5 + 1)
-    score = idf * (tf * (k1 + 1)) / (tf + k1 * (1 - b + b*(index.doc_lengths[doc_id] / index.avg_doc_length)))
+    idf = math.log((index.doc_count - df + 0.5) / (df + 0.5) + 1)
+    return idf * (tf * (k1 + 1)) / (tf + k1 * (1 - b + b*(index.doc_lengths[doc_id] / index.avg_doc_length)))
     
 
 SCORERS: dict[str, Scorer] = {

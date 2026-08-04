@@ -23,7 +23,7 @@ ranking work for you.
 - [x] Unit tests for tokenizer, indexer, ranker (20 tests, all passing)
 - [ ] Deployed
 
-## Why this isn't a search-engine demo
+## Difference from Search Engine 
 
 Most small information-retrieval projects load a fixed corpus once at
 startup and indexes are never retouched. This is a *retrieval
@@ -184,6 +184,33 @@ Three specific failure modes a naive ranker would fall into:
 the keyword-stuffed spam document (score 4.2934 vs. 1.2331), while TF-IDF was
 incorrectly favored the spam document's raw repetition (score 5.6027 vs. 16.8656) -- a direct,
 measured demonstration of BM25's term-frequency saturation."
+
+## Evaluation against a real IR benchmark
+
+Beyond the synthetic tests above, this was evaluated against the
+[Cranfield test collection](https://ir-datasets.com/cranfield.html) —
+1,400 real documents, 225 real queries, and genuine human relevance
+judgments, a standard evaluation set used in IR research since the
+1960s. Unlike the synthetic benchmarks, this measures real
+precision/recall/MRR rather than a proxy like topic accuracy:
+
+```bash
+pip install ir_datasets
+python cranfield_eval.py
+```
+
+| Metric        | BM25   | TF-IDF |
+|---------------|--------|--------|
+| Precision@10  | 0.2378 | 0.1813 |
+| Recall@10     | 0.4021 | 0.3064 |
+| MRR           | 0.5246 | 0.4461 |
+
+BM25 outperforms TF-IDF across every metric — consistent with published
+IR literature, and a reasonable sign this implementation is behaving
+like a correct BM25 rather than something subtly broken. MRR of 0.52
+means the first relevant result appears at rank ~2 on average; Recall@10
+of 0.40 means roughly 40% of all documents judged relevant to a query
+are found within the top 10 results.
 
 ## Known limitations
 

@@ -1,0 +1,4 @@
+Python is a high-level, interpreted programming language known for its
+readability. Python supports multiple programming paradigms, including
+procedural, object-oriented, and functional programming. Python's standard
+library is extensive, covering everything from file I/O to networking.

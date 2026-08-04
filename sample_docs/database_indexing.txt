@@ -1,0 +1,5 @@
+Database indexing improves the speed of data retrieval operations. A
+B-tree index is a common structure used by relational databases like
+Postgres and MySQL. Without an index, a database must scan every row to
+find matches, which is slow for large tables. Inverted indexes are used
+in search engines for fast text retrieval.

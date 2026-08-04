@@ -1,0 +1,5 @@
+Ranking algorithms determine the order of search results. TF-IDF weighs
+terms by how often they appear in a document relative to how common they
+are across the whole collection. BM25 improves on TF-IDF by saturating
+term frequency and normalizing for document length, which tends to
+produce better ranking quality in practice.

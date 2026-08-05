@@ -1,11 +1,7 @@
 # Document Retrieval System
 
 A document retrieval system that ingests uploaded PDF and text files,
-indexes their content, and returns ranked search results with highlighted,
-context-aware snippets. The inverted index, TF-IDF ranking, BM25 ranking,
-and snippet extraction are all implemented from scratch — no external
-search engine and no database full-text search feature is doing the
-ranking work for you.
+indexes their content, and returns ranked search results with highlighted, context-aware snippets. 
 
 ## Status
 

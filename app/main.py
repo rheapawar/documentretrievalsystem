@@ -1,7 +1,7 @@
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from fastapi import UploadFile, File, Depends
+from fastapi import UploadFile, File, Depends, HTTPException
 
 from pathlib import Path
 import shutil
@@ -23,9 +23,9 @@ index = InvertedIndex()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
-    db = next(get_db)
+    db = next(get_db())
     for doc in all_documents(db):
-        tokens = tokenize(doc)
+        tokens = tokenize(doc.extracted_text)
         index.add_document(doc.id, tokens)
         doc_store[doc.id] = {"filename": doc.file_name, "extracted_text": doc.extracted_text}
     db.close()
@@ -50,13 +50,15 @@ async def upload_document(file: UploadFile = File(...), db: Session = Depends(ge
 
     with dest_path.open("wb") as f:
         shutil.copyfileobj(file.file, f)
-    text = extract_text(str(dest_path), suffix)
-
+    try:
+        text = extract_text(str(dest_path), suffix)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
     new_doc = Document(
         id = doc_id,
         file_name = file.filename,
         content_type = file.content_type,
-        file_size_bytes=dest_path.stat().st.size,
+        file_size_bytes=dest_path.stat().st_size,
         extracted_text=text,
         uploaded_at=datetime.now(timezone.utc).isoformat(),
     )

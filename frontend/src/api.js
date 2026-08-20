@@ -21,6 +21,8 @@ export async function uploadDocument(file){
         const errBody = await res.json().catch(() => ({}));
         throw new Error(errBody.detail || "Upload failed");
     }
+
+    return res.json();
 }
 
 export async function searchDocuments(query, method){
@@ -38,6 +40,16 @@ export async function listDocuments() {
   const res = await fetch(`${API_BASE}/documents`);
   if (!res.ok) {
     throw new Error("Failed to load documents");
+  }
+  return res.json();
+}
+
+export async function clearDocuments() {
+  const res = await fetch(`${API_BASE}/documents`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to clear documents");
   }
   return res.json();
 }

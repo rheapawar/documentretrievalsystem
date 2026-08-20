@@ -1,79 +1,5 @@
-/*
- * TODO: build this component yourself. It needs to do exactly what your
- * vanilla-JS script.js already does -- upload a file, search, render
- * results -- just using React state instead of manually querying and
- * mutating DOM elements. That translation (imperative DOM updates ->
- * declarative state + re-render) is the actual React skill being shown
- * here, not the fetch calls themselves (those are already done for you
- * in api.js).
- *
- * ---- State you'll need (useState) ----
- *   1. backendStatus  -- "checking..." | "connected" | "unreachable"
- *      Set this once on mount via useEffect, by calling checkHealth().
- *   2. file           -- the currently selected File object (or null),
- *      from a controlled <input type="file">.
- *   3. uploadMsg      -- text to show under the upload form (status/errors).
- *   4. query          -- the search input's current text (controlled input).
- *   5. method         -- "bm25" | "tfidf", from a <select>.
- *   6. results        -- array of result objects from the last search.
- *   7. searching       -- boolean, true while a search request is in flight
- *      (used to disable the search button and show "Searching...").
- *
- * ---- Effects ----
- *   On mount (empty dependency array), call checkHealth() from api.js and
- *   set backendStatus based on whether it succeeds or throws.
- *
- * ---- Handlers ----
- *   handleUpload(e):
- *     - e.preventDefault()
- *     - if no file selected, return early
- *     - set uploadMsg to "Uploading..."
- *     - call uploadDocument(file), await the result
- *     - on success: show tokens_indexed in uploadMsg
- *     - on failure: show err.message in uploadMsg
- *     - wrap the await in try/catch
- *
- *   handleSearch(e):
- *     - e.preventDefault()
- *     - if query is empty/whitespace, return early
- *     - set searching to true
- *     - call searchDocuments(query, method), await the result
- *     - set results to data.results (default to [] if missing)
- *     - set searching back to false in a finally block
- *
- * ---- JSX structure ----
- *   - A header showing the title and backendStatus
- *   - An upload <form onSubmit={handleUpload}> with a file input and
- *     submit button, plus the uploadMsg text below it
- *   - A search <form onSubmit={handleSearch}> with a text input (bound to
- *     query), a method <select> (bound to method), and a submit button
- *   - A results list: results.map(r => ...) rendering each result's
- *     filename, score, and snippet
- *
- * ---- One important gotcha ----
- *   Each result's `snippet` field contains literal <mark> tags from your
- *   backend (e.g. "the <mark>fox</mark> jumps"), meant to render as HTML
- *   for the highlighting to actually show up. If you render it as plain
- *   text (e.g. {r.snippet} directly in JSX), React will escape it and
- *   you'll see literal "<mark>" text on the page instead of highlighting.
- *   You need React's dangerouslySetInnerHTML for just that one field:
- *
- *     <p dangerouslySetInnerHTML={{ __html: r.snippet }} />
- *
- *   The name is a deliberate warning label from the React team -- it's
- *   normally how XSS vulnerabilities get introduced, since it renders raw
- *   HTML with no escaping. It's fine here specifically because YOUR OWN
- *   backend builds this string (not an untrusted user directly), but
- *   it's worth understanding why the API is named this scarily on
- *   purpose, and why you should never reach for it as a default habit.
- *
- * ---- Don't forget ----
- *   Every item in a .map()'d list needs a unique `key` prop -- use
- *   `r.id` here, not the array index.
- */
-
 import { useState, useEffect } from "react";
-import { checkHealth, uploadDocument, searchDocuments, listDocuments } from "./api";
+import { checkHealth, uploadDocument, searchDocuments, listDocuments, clearDocuments } from "./api";
 import "./App.css";
 
 function App() {
@@ -99,6 +25,9 @@ function App() {
     return () => clearTimeout(timer);
   }, [query, method]);
 
+  useEffect(() => {
+    loadDocs();
+  }, []);
 
   async function loadDocs() {
   try {
@@ -140,12 +69,20 @@ function App() {
     }catch(err){
       setUploadMsg(`Error: ${err.message}`);
     }
+    loadDocs();
     runSearch(query, method);
   }
 
   function handleSearch(e) {
     e.preventDefault();
-    runSearch(query, method);  
+    runSearch(query, method);
+  }
+
+  async function handleClear() {
+    await clearDocuments();
+    setResults([]);
+    setUploadMsg("");
+    loadDocs();
   }
 
   return (
@@ -161,7 +98,14 @@ function App() {
       </form>
 
       <div className="doc-list">
-        <h2>Documents ({docs.length})</h2>
+        <div className="doc-list-header">
+          <h2>Documents ({docs.length})</h2>
+          {docs.length > 0 && (
+            <button type="button" className="clear-btn" onClick={handleClear}>
+              Clear all
+            </button>
+          )}
+        </div>
         <ul>
           {docs.map((d) => (
             <li key={d.id}>{d.filename}</li>

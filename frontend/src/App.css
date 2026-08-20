@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body, .app {
+  margin: 0;
+  font-family: 'Courier Prime', 'Courier New', monospace;
+  background: #ffffff;
+  color: #111111;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  border-right: 2px solid #111111;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.sidebar h1 {
+  font-size: 20px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.status {
+  font-size: 13px;
+  color: #555555;
+  margin-bottom: 24px;
+}
+
+.upload-form {
+  border: 1px solid #111111;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.upload-form input[type="file"] {
+  display: block;
+  width: 100%;
+  margin-bottom: 12px;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.upload-msg {
+  font-size: 13px;
+  margin-top: 8px;
+  color: #333333;
+}
+
+.doc-list h2 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #111111;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.doc-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.doc-list li {
+  font-size: 13px;
+  padding: 6px 0;
+  border-bottom: 1px dotted #cccccc;
+}
+
+.main {
+  flex: 1;
+  padding: 24px 40px;
+  overflow-y: auto;
+}
+
+.search-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.search-form input[type="text"] {
+  flex: 1;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  border: 1px solid #111111;
+  background: #ffffff;
+}
+
+.search-form select,
+.search-form button {
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  border: 1px solid #111111;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.search-form button:disabled {
+  color: #999999;
+  cursor: default;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.result-card {
+  display: flex;
+  border: 1px solid #111111;
+}
+
+.rank {
+  width: 48px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  border-right: 1px solid #111111;
+  background: #111111;
+  color: #ffffff;
+}
+
+.result-content {
+  flex: 1;
+  padding: 14px 16px;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.filename {
+  font-weight: 700;
+}
+
+.score {
+  color: #555555;
+}
+
+.snippet {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.snippet mark {
+  background: #111111;
+  color: #ffffff;
+  padding: 0 2px;
+}

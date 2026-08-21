@@ -27,6 +27,10 @@ class InvertedIndex:
         for innerdict in self.listings.values():
             innerdict.pop(doc_id, None)
         self.doc_lengths.pop(doc_id, None)
+
+    def clear(self) -> None:
+        self.listings.clear()
+        self.doc_lengths.clear()
             
 
     def document_frequency(self, token: str) -> int:

@@ -26,7 +26,7 @@ export async function uploadDocument(file){
 }
 
 export async function searchDocuments(query, method){
-    const params = new URLSearchParams({query, method});
+    const params = new URLSearchParams({q: query, method});
     const res = await fetch(`${API_BASE}/search?${params.toString()}`);
 
     if(!res.ok){

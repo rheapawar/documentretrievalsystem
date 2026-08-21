@@ -62,15 +62,10 @@ body, .app {
 }
 
 .upload-form input[type="file"] {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
   margin-bottom: 14px;
   font-family: inherit;
   font-size: 13px;
   color: var(--text-dim);
-  text-align: center;
 }
 
 .upload-form button,

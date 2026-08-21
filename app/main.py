@@ -40,7 +40,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
     "http://localhost:5173",
-    "https://documentretrieval.onrender.com/health",],
+    "https://documentretrieval.onrender.com",],
     allow_methods=["*"],
     allow_headers=["*"]
 )

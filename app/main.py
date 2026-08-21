@@ -131,3 +131,5 @@ def clear_documents(db: Session = Depends(get_db)):
             f.unlink()
 
     return {"status": "cleared"}
+
+app.mount("/", StaticFiles(directory="frontend/dist", html=True), name="static")

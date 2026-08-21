@@ -2,6 +2,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi import UploadFile, File, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 from pathlib import Path
 import shutil
@@ -16,6 +17,7 @@ from app.retrieval.ranker import rank
 from app.retrieval.snippets import make_snippet
 from app.ingestion.extractor import extract_text
 
+from fastapi.staticfiles import StaticFiles
 
 
 
@@ -34,6 +36,14 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Document Retrieval System", lifespan=lifespan)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+    "http://localhost:5173",
+    "https://documentretrieval.onrender.com",],
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 @app.get("/health")
 def health():
@@ -95,3 +105,29 @@ def search(q: str, method: str = "bm25"):
             "snippet" : snippet,
         })
     return {"query": q, "method": method, "results": output}
+
+
+@app.get("/documents")
+def list_documents():
+    return {
+        "documents": [
+            {"id": doc_id, "filename": info["filename"]}
+            for doc_id, info in doc_store.items()
+        ]
+    }
+
+
+@app.delete("/documents")
+def clear_documents(db: Session = Depends(get_db)):
+    for doc in all_documents(db):
+        db.delete(doc)
+    db.commit()
+
+    index.clear()
+    doc_store.clear()
+
+    for f in UPLOAD_DIR.iterdir():
+        if f.is_file():
+            f.unlink()
+
+    return {"status": "cleared"}
